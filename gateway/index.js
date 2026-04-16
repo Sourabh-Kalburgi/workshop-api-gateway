@@ -14,7 +14,7 @@ app.use(limiter);
 const AUTH = "http://auth-service:4500";
 const SERVICE_A = "http://service-a:3001";
 const SERVICE_B = "http://service-b:3002";
-const DASHBOARD = "http://dashboard-service:4000";
+const DASHBOARD = "http://dashboard:5000";
 
 const verifyToken = async (req, res, next) => {
   try {
@@ -28,8 +28,8 @@ const verifyToken = async (req, res, next) => {
     const d = await authRes.json();
     if (!d.valid) return res.status(401).json({ error: "Unauthorized" });
     next();
-  } catch {
-    res.status(500).json({ error: "Auth service error" });
+  } catch(err) {
+    res.status(500).json({ error: "Error", details: err.message });
   }
 };
 
@@ -45,9 +45,8 @@ const forward = async (req, res, url) => {
     });
     const d = await response.json();
     res.status(response.status).json(d);
-  } catch {
-    res.status(500).json({ error: "Error" });
-  }
+  } catch (err) {
+     res.status(500).json({ error: "Error", details: err.message })  }
 };
 
 app.get("/health", (req, res) => {

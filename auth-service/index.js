@@ -23,7 +23,11 @@ app.post('/login', (req, res) => {
 })
 
 app.post('/verify', (req, res) => {
-  const { token } = req.body
+  const { authorization: bearerToken } = req.headers
+  if (!bearerToken || !bearerToken.startsWith('Bearer ')) {
+    return res.json({ valid: false })
+  }
+  const token = bearerToken.split(' ')[1]
   try {
     const decoded = jwt.verify(token, JWT_SECRET)
     res.json({ valid: true, payload: decoded })
