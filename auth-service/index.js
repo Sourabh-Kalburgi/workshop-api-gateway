@@ -19,7 +19,7 @@ app.post('/login', (req, res) => {
   if (!user) return res.status(401).json({ error: 'User not found...' })
   const payload = { username: user.username, role: user.role }
   const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' })
-  res.json({ token })
+  res.status(200).json({ token: token, username: payload.username, role: payload.role })
 })
 
 app.post('/verify', (req, res) => {
